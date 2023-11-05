@@ -5,10 +5,8 @@ using FactorioModManagerReal.Models;
 
 namespace FactorioModManagerReal
 {
-
     public class Program
     {
-
         static void Main(string[] args)
         {
             var roaming = System.Environment.GetEnvironmentVariable("APPDATA");
@@ -43,6 +41,7 @@ namespace FactorioModManagerReal
 
 
         }
+
         static ModList GetModsFromFile(string modPath)
         {
             using (StreamReader sr = File.OpenText(modPath))
