@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Text.Json;
-using FactorioModManagerReal.Models;
+﻿using FactorioModManagerReal.Models;
 
 namespace FactorioModManagerReal
 {
@@ -23,61 +20,24 @@ namespace FactorioModManagerReal
                     Console.Clear();
                 }
             }
-            factorioPath = roaming + @"\Factorio\mods\empty-mod.json";
 
 
-            var mods = GetModsFromFile(factorioPath);
+            ModList modList = ModViewer.GetModsFromFile(factorioPath);
 
-            var enabledMods = GetEnabledMods(mods);
+            ModList inactiveMods = new ModList(
+                (from mod in modList.mods
+                where mod.enabled != true
+                select mod).DefaultIfEmpty().ToList());
 
-            Console.Write($"Downloaded mods: {mods.mods.Count} | Enabled Mods {mods.mods.Count}\n" +
-                $"Mod Name | Enabled\n------\n");
+            ModList enabledMods = ModViewer.GetEnabledMods(modList);
 
-            foreach (var item in mods.mods)
-            {
-                Console.WriteLine($"{item.name, 5} | {item.enabled, 5}");
-            }
+            ModList[] allMods = { modList, inactiveMods, enabledMods };
 
-
-
-        }
-
-        static ModList GetModsFromFile(string modPath)
-        {
-            using (StreamReader sr = File.OpenText(modPath))
-            { // System.Text.Json.JsonException
-
-                try
-                {
-                    var modList = JsonSerializer.Deserialize<ModList>
-                    (sr.ReadToEnd());
-                    return modList;
-
-                }
-                catch (JsonException ex) 
-                {
-                    return new ModList(new List<Mod>()); ;
-                }
-
-
-            }
-        }
-
-        static ModList GetEnabledMods(ModList modList) 
-        {
-            try
-            {
-                var allEnabledMods =
-                    (from mods in modList.mods
-                     where mods.enabled == true
-                     select mods).DefaultIfEmpty().ToList();
-                
-                return new ModList(allEnabledMods);
-
-            } catch (JsonException ex) 
-            {
-                return new ModList(new List<Mod>());
-            }
+            Array.ForEach(allMods, mod => {
+                Console.Write($"Downloaded mods: {enabledMods.mods.Count} | Enabled Mods {enabledMods.mods.Count}\n" +"Mod name | Enabled\n------\n"); 
+                mod.mods.ForEach(mod => Console.WriteLine($"{mod.name,5} | {mod.enabled,5}"));
+                Console.ReadKey(); Console.Clear();
+            });
         }
     }
 }
