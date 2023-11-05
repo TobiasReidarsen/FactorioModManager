@@ -1,3 +1,3 @@
 ﻿namespace FactorioModManagerReal.Models;
 
-public readonly record struct ModList(List<Mod> Mods);
+public readonly record struct ModList(List<Mod> mods);
