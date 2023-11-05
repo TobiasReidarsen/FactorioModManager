@@ -3,8 +3,8 @@ using System.Text.Json.Serialization;
 
 namespace FactorioModManagerReal
 {
-    internal record struct Mod (string name, bool enabled);
-    internal record struct ModList (List<Mod> mods);
+    internal record struct Mod(string name, bool enabled);
+    internal record struct ModList(List<Mod> mods);
 
 
     internal class Program
@@ -39,13 +39,14 @@ namespace FactorioModManagerReal
             }
 
             var mods = GetModsFromFile(roaming + factorioPath);
+            Console.WriteLine(mods.ToString());
 
             var enabledMods = GetEnabledMods(mods);
 
-            Console.Write($"Downloaded mods: {mods.mods.Count()} | Enabled Mods {enabledMods.Count()}\n" +
+            Console.Write($"Downloaded mods: {mods.mods.Count} | Enabled Mods {mods.mods.Count}\n" +
                 $"Mod Name | Enabled\n------\n");
 
-            foreach (var item in enabledMods)
+            foreach (var item in mods.mods)
             {
                 Console.WriteLine($"{item.name, 5} | {item.enabled, 5}");
             }
