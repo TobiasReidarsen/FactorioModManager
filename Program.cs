@@ -1,11 +1,9 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using FactorioModManagerReal.Models;
 
 namespace FactorioModManagerReal
 {
-    internal record struct Mod(string name, bool enabled);
-    internal record struct ModList(List<Mod> mods);
-
 
     internal class Program
     {
