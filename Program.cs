@@ -14,7 +14,6 @@ namespace FactorioModManagerReal
             var roaming = System.Environment.GetEnvironmentVariable("APPDATA");
             var factorioPath = roaming + @"\Factorio\mods\mod-list.json";
 
-
             if (args.Length != 0) 
             {
                 factorioPath = ParseCmdArgs.GetJsonPath(args[0]);
@@ -24,10 +23,10 @@ namespace FactorioModManagerReal
                     factorioPath = ParseCmdArgs.GetJsonPath(Console.ReadLine() ?? string.Empty);
 
                     Console.Clear();
-                    //break;
                 }
             }
-            
+            factorioPath = roaming + @"\Factorio\mods\empty-mod.json";
+
 
             var mods = GetModsFromFile(factorioPath);
 
@@ -46,24 +45,40 @@ namespace FactorioModManagerReal
         }
         static ModList GetModsFromFile(string modPath)
         {
-
             using (StreamReader sr = File.OpenText(modPath))
-            {
-                var modList = JsonSerializer.Deserialize<ModList>
+            { // System.Text.Json.JsonException
+
+                try
+                {
+                    var modList = JsonSerializer.Deserialize<ModList>
                     (sr.ReadToEnd());
-                return modList;
+                    return modList;
+
+                }
+                catch (JsonException ex) 
+                {
+                    return new ModList(new List<Mod>()); ;
+                }
+
 
             }
         }
 
-        static IEnumerable<Mod> GetEnabledMods(ModList modList) 
+        static ModList GetEnabledMods(ModList modList) 
         {
-            var allEnabledMods =
-                from mods in modList.mods
-                where mods.enabled == true
-                select mods;
+            try
+            {
+                var allEnabledMods =
+                    (from mods in modList.mods
+                     where mods.enabled == true
+                     select mods).DefaultIfEmpty().ToList();
                 
-            return allEnabledMods.DefaultIfEmpty();
+                return new ModList(allEnabledMods);
+
+            } catch (JsonException ex) 
+            {
+                return new ModList(new List<Mod>());
+            }
         }
     }
 }
