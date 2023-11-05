@@ -1,43 +1,25 @@
 ﻿using System.Text.Json;
-using System.Text.Json.Serialization;
 using FactorioModManagerReal.Models;
 
 namespace FactorioModManagerReal
 {
 
-    internal class Program
+    public class Program
     {
 
         static void Main(string[] args)
         {
             var roaming = System.Environment.GetEnvironmentVariable("APPDATA");
-            var factorioPath = "\\Factorio\\mods\\mod-list.json";
+            var factorioPath = roaming + "\\Factorio\\mods\\mod-list.json";
 
-            while (true)
+
+            if (args.Length != 0) 
             {
-
-                if (!File.Exists(roaming + factorioPath))
-                {
-                    Console.WriteLine("Invalid Path, enter another path");
-                    factorioPath = Console.ReadLine();
-
-                    if (factorioPath == null) { Console.WriteLine("Enter valid path omg"); continue; }
-
-                    if (!factorioPath.EndsWith("mod-list.json"))
-                    {
-                        Console.WriteLine("Invalid file. Enter a new path");
-
-                        continue;
-                    }
-
-                }
-
-                break;
-
+                factorioPath = ParseCmdArgs.GetJsonPath(args[0]);
             }
+            
 
-            var mods = GetModsFromFile(roaming + factorioPath);
-            Console.WriteLine(mods.ToString());
+            var mods = GetModsFromFile(factorioPath);
 
             var enabledMods = GetEnabledMods(mods);
 
@@ -52,7 +34,6 @@ namespace FactorioModManagerReal
 
 
         }
-//static IEnumerable<Mods> GetMods()
         static ModList GetModsFromFile(string modPath)
         {
 
@@ -72,7 +53,7 @@ namespace FactorioModManagerReal
                 where mods.enabled == true
                 select mods;
                 
-            return allEnabledMods;
+            return allEnabledMods.DefaultIfEmpty();
         }
     }
 }
