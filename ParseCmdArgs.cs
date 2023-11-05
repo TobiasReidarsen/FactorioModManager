@@ -6,30 +6,26 @@ using System.Threading.Tasks;
 
 namespace FactorioModManagerReal;
 
-static public class ParseCmdArgs
+public static class ParseCmdArgs
 {
-    static public string GetJsonPath(string path)
+    public static string GetJsonPath(string path)
     {
+
+        if (!File.Exists(path) || !path.EndsWith(".json")) { return string.Empty; }
+
+        return path;
+
         while (true)
         {
+            string newPath = Console.ReadLine() ?? string.Empty;
 
-            if (!File.Exists(path))
+            if (!File.Exists(newPath) || !newPath.EndsWith(".json"))
             {
                 Console.WriteLine("Invalid Path, enter another path");
-                path = Console.ReadLine();
-
-                if (path == null) { Console.WriteLine("Enter valid path omg"); continue; }
-
-                if (!path.EndsWith("mod-list.json"))
-                {
-                    Console.WriteLine("Invalid file. Enter a new path");
-
-                    continue;
-                }
-
+                continue;
             }
 
-            return path;
+            return newPath;
 
         }
     }

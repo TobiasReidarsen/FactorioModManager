@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.IO;
+using System.Text.Json;
 using FactorioModManagerReal.Models;
 
 namespace FactorioModManagerReal
@@ -10,12 +12,20 @@ namespace FactorioModManagerReal
         static void Main(string[] args)
         {
             var roaming = System.Environment.GetEnvironmentVariable("APPDATA");
-            var factorioPath = roaming + "\\Factorio\\mods\\mod-list.json";
+            var factorioPath = roaming + @"\Factorio\mods\mod-list.json";
 
 
             if (args.Length != 0) 
             {
                 factorioPath = ParseCmdArgs.GetJsonPath(args[0]);
+
+                while (factorioPath.Equals(string.Empty)) {
+                    Console.WriteLine("Invalid Path!");
+                    factorioPath = ParseCmdArgs.GetJsonPath(Console.ReadLine() ?? string.Empty);
+
+                    Console.Clear();
+                    //break;
+                }
             }
             
 

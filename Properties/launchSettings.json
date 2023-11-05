@@ -1,7 +1,8 @@
 {
   "profiles": {
     "FactorioModManagerReal": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "C:\\Users\\tobia\\AppData\\Roaming\\Factorio\\mods\\mod-list.csv"
     }
   }
 }
