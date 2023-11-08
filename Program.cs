@@ -6,20 +6,32 @@ namespace FactorioModManagerReal
     {
         static void Main(string[] args)
         {
-            var roaming = System.Environment.GetEnvironmentVariable("APPDATA");
-            var factorioPath = roaming + @"\Factorio\mods\mod-list.json";
+	    string roaming = string.Empty;
+	    var factorioPathWindows =roaming+ @"\Factorio\mods\mod-list.json";
+		
+	    var factorioPath = string.Empty;
+	    	if (args.Length == 0){
+			do
+			{	Console.WriteLine("Please input a valid path:");
+		    		factorioPath = ParseCmdArgs.GetJsonPath(Console.ReadLine() ?? string.Empty);
+				Console.WriteLine(factorioPath);
+			} while (factorioPath.Equals(string.Empty));	
+		}
 
             if (args.Length != 0) 
             {
                 factorioPath = ParseCmdArgs.GetJsonPath(args[0]);
-
-                while (factorioPath.Equals(string.Empty)) {
+		do 
+		{
                     Console.WriteLine("Invalid Path!");
                     factorioPath = ParseCmdArgs.GetJsonPath(Console.ReadLine() ?? string.Empty);
 
                     Console.Clear();
-                }
-            }
+		}
+                while (factorioPath.Equals(string.Empty));
+
+            }  
+		
 
 
             ModList modList = ModViewer.GetModsFromFile(factorioPath);
